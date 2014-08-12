@@ -1,3 +1,5 @@
-C86_Android/bin/*
-C86_Android/gen/*
-
+C86_Android/.gradle
+C86_Android/local.properties
+C86_Android/.idea/workspace.xml
+C86_Android/app/build
+*.DS_Store
