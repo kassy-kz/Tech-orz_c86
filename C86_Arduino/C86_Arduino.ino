@@ -5,7 +5,7 @@ AquesTalk atp;
 
 // BLESerialの受信データ
 int rcvData = 0;
-
+int sendCount = 0;
 
 void setup(){
   // デバッグシリアル
@@ -20,19 +20,22 @@ void setup(){
 }
 
 void loop(){
-  // こんにちは と発声（無限ループ）
-  atp.Synthe("konnnichiwa.");  
   
-  // BLESerial受信処理
-  char buf[20];
+  // BLESerial受信処理（分割結合あり）
+  char buf[127];
   if(Serial2.available() > 0){
     // シリアルから読み取り
-    rcvData = Serial2.readBytes(buf, 20);
-    Serial.print("BLESerial receive ");
+    rcvData = Serial2.readBytesUntil('¥0', buf, 127);
+    buf[(int)rcvData] = 0;
+    Serial.println("BLESerial receive ");
     Serial.println(buf);
 
+    // 受信したのはローマ字のはずなので、そのままAquestalkに喋らせる
+    atp.Synthe(buf);    
+
     // BLESerialで返答を送信する
-    Serial2.write("success receive");
+    sendCount++;
+    Serial2.write("success receive "+ sendCount);
   }
 }
 
