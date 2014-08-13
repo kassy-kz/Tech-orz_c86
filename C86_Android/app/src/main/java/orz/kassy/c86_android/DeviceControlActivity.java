@@ -32,13 +32,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import aqkanji2koe.AqKanji2Koe;
+import aqkanji2koe.Kana2Roma;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -123,6 +124,10 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gatt_services_characteristics);
 
+        // 初回起動時にAqKanji2Koeの辞書データを起動する
+        AqKanji2Koe.copyDic(this);
+
+
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
@@ -139,6 +144,9 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
 
         Button btnSendData = (Button) findViewById(R.id.btnSendData);
         btnSendData.setOnClickListener(this);
+
+        Button btnSendKanjiData = (Button) findViewById(R.id.btnSendKanjiData);
+        btnSendKanjiData.setOnClickListener(this);
     }
 
     @Override
@@ -269,8 +277,72 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
                 String speak1 = "zetsubou";
                 mBluetoothLeService.sendData(speak1.getBytes());
                 break;
+
+            case R.id.btnSendKanjiData:
+                String kanjiStr = "絶望がお前たちのゴールだ";
+                String romaStr = getRomaFromKanji(kanjiStr);
+                Log.i(TAG,"kanji= " + kanjiStr);
+                Log.i(TAG,"roma = " + romaStr);
+
+                // 20バイト超えるであろうデータをBLESerialに分割で流し込む
+                sendLongDataToBLE(romaStr);
+
+                break;
             default:
                 break;
         }
+    }
+
+
+    /**
+     * 20バイトを超えるデータを分割して送付するためのユーティリティメソッド
+     * BLESerialで一度に送れるのは20byteまでなので
+     * 結合はArduino側で行う
+     * @param sendString
+     */
+    private void sendLongDataToBLE(String sendString) {
+        // 分割文字列
+        String subStr;
+        int i = 0;
+
+        while(true) {
+            if((i+20) < sendString.length()) {
+                subStr = sendString.substring(i, i+20);
+                Log.i(TAG,"subStr = " + subStr);
+
+                mBluetoothLeService.sendData(subStr.getBytes());
+                i=i+20;
+            } else {
+                subStr = sendString.substring(i, sendString.length());
+                subStr = subStr + "a";
+                Log.i(TAG,"last subStr = " + subStr);
+
+                byte[] sendByte = subStr.getBytes();
+                sendByte[sendByte.length-1] = 0x00;
+                mBluetoothLeService.sendData(subStr.getBytes());
+                break;
+            }
+        }
+    }
+
+    /**
+     * 漢字の文字列をAquest用のローマ字に変換
+     * @param kanjiStr
+     * @return
+     */
+    private String getRomaFromKanji(String kanjiStr){
+        String dirDic = getFilesDir().toString();
+
+        // 漢字からカナ音素に変換
+        //String strKoe = Kanji2Koe.conv(dirDic, kanjiStr);
+        AqKanji2Koe aqKanji2koe = new AqKanji2Koe();
+        String strKoe = aqKanji2koe.Convert(dirDic, kanjiStr);
+
+
+        // カナからローマ字に変換
+        Kana2Roma k2r = new Kana2Roma();
+        String strRoma = k2r.kana2roma(strKoe);
+
+        return strRoma;
     }
 }
