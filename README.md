@@ -43,9 +43,12 @@ Tech-orz 2014 SUMMER 第一部で紹介したガジェットの設計とソー�
 (Arduinoのインストールディレクトリ)/library/
 配下に置きます。
 
-### AqKanji2Koe
+### AqKanji2Koe for Android
 
 [http://a-quest.com/download/index.html](http://a-quest.com/download/index.html)
+
+上記サイトから評価版をダウンロードできます。
+継続使用する場合には製品版を申請する必要があります。（個人利用なら無償、ライセンス発行手数料1800円）
 
 ダウンロードして解凍し、中のlibAqKanji2Koe.soを
 C86_Android/app/src/main/jniLibs/armeabi/
