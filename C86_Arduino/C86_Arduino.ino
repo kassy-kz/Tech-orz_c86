@@ -16,7 +16,6 @@ void setup(){
   pinMode(16, OUTPUT);
   // シリアル通信セットアップ
   Serial2.begin(9600);
-
 }
 
 void loop(){
