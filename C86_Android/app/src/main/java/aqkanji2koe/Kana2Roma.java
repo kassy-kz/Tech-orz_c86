@@ -78,6 +78,11 @@ public class Kana2Roma {
         m.put("プ", "pu");
         m.put("ペ", "pe");
         m.put("ポ", "po");
+
+        m.put("ファ", "fa");
+        m.put("フィ", "fi");
+        m.put("フェ", "fe");
+        m.put("フォ", "fo");
         m.put("キャ", "kya");
         m.put("キュ", "kyu");
         m.put("キョ", "kyo");

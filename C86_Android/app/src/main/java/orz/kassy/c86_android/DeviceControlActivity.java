@@ -279,10 +279,8 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
                 break;
 
             case R.id.btnSendKanjiData:
-                String kanjiStr = "絶望がお前たちのゴールだ";
+                String kanjiStr = "@mt_field 絶望がお前たちのゴールだ";
                 String romaStr = getRomaFromKanji(kanjiStr);
-                Log.i(TAG,"kanji= " + kanjiStr);
-                Log.i(TAG,"roma = " + romaStr);
 
                 // 20バイト超えるであろうデータをBLESerialに分割で流し込む
                 sendLongDataToBLE(romaStr);
@@ -331,6 +329,8 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
      * @return
      */
     private String getRomaFromKanji(String kanjiStr){
+        Log.i(TAG,"kanji= " + kanjiStr);
+
         String dirDic = getFilesDir().toString();
 
         // 漢字からカナ音素に変換
@@ -338,11 +338,14 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
         AqKanji2Koe aqKanji2koe = new AqKanji2Koe();
         String strKoe = aqKanji2koe.Convert(dirDic, kanjiStr);
 
+        Log.i(TAG,"koe  = " + strKoe);
 
         // カナからローマ字に変換
         Kana2Roma k2r = new Kana2Roma();
-        String strRoma = k2r.kana2roma(strKoe);
+        String romaStr = k2r.kana2roma(strKoe);
 
-        return strRoma;
+        Log.i(TAG,"roma = " + romaStr);
+
+        return romaStr;
     }
 }
