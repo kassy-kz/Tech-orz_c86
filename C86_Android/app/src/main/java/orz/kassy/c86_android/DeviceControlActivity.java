@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import aqkanji2koe.AqKanji2Koe;
-import aqkanji2koe.Kana2Roma;
+
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -65,6 +65,19 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+
+    private static DeviceControlActivity sSelf = null;
+
+    /**
+     * 外部からBLEへのデータ転送を受け付ける
+     * @param str 文字列（発声を望むデータならローマ字に変換しておくこと）
+     */
+    public static void sendStringToBleDevice(String str) {
+        if (sSelf == null) {
+            return;
+        }
+        sSelf.sendLongDataToBLE(str);
+    }
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -122,6 +135,7 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sSelf = this;
         setContentView(R.layout.gatt_services_characteristics);
 
         // 初回起動時にAqKanji2Koeの辞書データを起動する
@@ -147,6 +161,11 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
 
         Button btnSendKanjiData = (Button) findViewById(R.id.btnSendKanjiData);
         btnSendKanjiData.setOnClickListener(this);
+
+
+        // NotificationListenerServiceを立ち上げる
+        Intent serviceIntent = new Intent(this, MyNotificationListenerService.class);
+        startService(serviceIntent);
     }
 
     @Override
@@ -168,6 +187,12 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        sSelf = null;
+
+        // NotificationListenerServiceを止める
+        Intent serviceIntent = new Intent(this, MyNotificationListenerService.class);
+        stopService(serviceIntent);
+
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
     }
@@ -279,8 +304,8 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
                 break;
 
             case R.id.btnSendKanjiData:
-                String kanjiStr = "@mt_field 絶望がお前たちのゴールだ";
-                String romaStr = getRomaFromKanji(kanjiStr);
+                String kanjiStr = "絶望がお前たちのゴールだ";
+                String romaStr = AqKanji2Koe.getRomaFromKanji(this, kanjiStr);
 
                 // 20バイト超えるであろうデータをBLESerialに分割で流し込む
                 sendLongDataToBLE(romaStr);
@@ -312,7 +337,7 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
                 i=i+20;
             } else {
                 subStr = sendString.substring(i, sendString.length());
-                subStr = subStr + "a";
+                //subStr = subStr + "a";
                 Log.i(TAG,"last subStr = " + subStr);
 
                 byte[] sendByte = subStr.getBytes();
@@ -323,29 +348,4 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
         }
     }
 
-    /**
-     * 漢字の文字列をAquest用のローマ字に変換
-     * @param kanjiStr
-     * @return
-     */
-    private String getRomaFromKanji(String kanjiStr){
-        Log.i(TAG,"kanji= " + kanjiStr);
-
-        String dirDic = getFilesDir().toString();
-
-        // 漢字からカナ音素に変換
-        //String strKoe = Kanji2Koe.conv(dirDic, kanjiStr);
-        AqKanji2Koe aqKanji2koe = new AqKanji2Koe();
-        String strKoe = aqKanji2koe.Convert(dirDic, kanjiStr);
-
-        Log.i(TAG,"koe  = " + strKoe);
-
-        // カナからローマ字に変換
-        Kana2Roma k2r = new Kana2Roma();
-        String romaStr = k2r.kana2roma(strKoe);
-
-        Log.i(TAG,"roma = " + romaStr);
-
-        return romaStr;
-    }
 }

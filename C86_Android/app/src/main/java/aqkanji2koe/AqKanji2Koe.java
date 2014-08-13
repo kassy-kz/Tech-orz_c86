@@ -17,6 +17,8 @@ public class AqKanji2Koe {
         System.loadLibrary("AqKanji2Koe");
     }
 
+    private static final String TAG = "AqKanji2Koe";
+
     public static String conv(String dirDic, String kanjiStr) {
         return new AqKanji2Koe().Convert(dirDic, kanjiStr);
     }
@@ -108,6 +110,32 @@ public class AqKanji2Koe {
         dialog.setMax(100);
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    /**
+     * 漢字の文字列をAquest用のローマ字に変換
+     * @param kanjiStr
+     * @return
+     */
+    public static String getRomaFromKanji(Context context, String kanjiStr){
+        Log.i(TAG,"kanji= " + kanjiStr);
+
+        String dirDic = context.getFilesDir().toString();
+
+        // 漢字からカナ音素に変換
+        //String strKoe = Kanji2Koe.conv(dirDic, kanjiStr);
+        AqKanji2Koe aqKanji2koe = new AqKanji2Koe();
+        String strKoe = aqKanji2koe.Convert(dirDic, kanjiStr);
+
+        Log.i(TAG,"koe  = " + strKoe);
+
+        // カナからローマ字に変換
+        Kana2Roma k2r = new Kana2Roma();
+        String romaStr = k2r.kana2roma(strKoe);
+
+        Log.i(TAG,"roma = " + romaStr);
+
+        return romaStr;
     }
 
 

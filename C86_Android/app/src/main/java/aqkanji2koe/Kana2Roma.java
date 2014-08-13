@@ -116,7 +116,10 @@ public class Kana2Roma {
         m.put("ピャ", "pya");
         m.put("ピュ", "pyu");
         m.put("ピョ", "pyo");
+        m.put("トゥ", "tu");
         m.put("ー", "-");
+        m.put("。", ".");
+        m.put("、", ",");
     }
 
     public String kana2roma(String s) {
