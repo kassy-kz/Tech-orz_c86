@@ -29,8 +29,16 @@ void loop(){
     Serial.println("BLESerial receive ");
     Serial.println(buf);
 
-    // 受信したのはローマ字のはずなので、そのままAquestalkに喋らせる
-    atp.Synthe(buf);    
+    // CONNECTを検出（スマホとの接続を検知）
+    String str = String(buf);
+    if(str.equals("CONNECT\n")) {
+      // おかえりなさいを言ってもらう
+      atp.Synthe("okaerinasai");
+    } 
+    else {
+      // 受信したのはローマ字のはずなので、そのままAquestalkに喋らせる
+      atp.Synthe(buf);    
+    }
 
     // BLESerialで返答を送信する
     sendCount++;
