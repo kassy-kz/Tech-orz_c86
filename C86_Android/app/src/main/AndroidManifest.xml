@@ -6,6 +6,8 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -32,6 +34,24 @@
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".WifiEventReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.net.wifi.STATE_CHANGE" >
+                </action>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.net.wifi.RSSI_CHANGED" >
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".BleScanService"
+            android:label="@string/service_name">
         </service>
 
     </application>

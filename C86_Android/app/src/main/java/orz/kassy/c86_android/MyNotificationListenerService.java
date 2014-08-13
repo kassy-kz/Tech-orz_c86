@@ -75,12 +75,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
             String message1  = "メールが届きました";
             String message1r = AqKanji2Koe.getRomaFromKanji(this, message1);
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(message1r);
+            BluetoothLeService.sendStringToBleDevice(message1r);
 
             // ローマ字に変換して
             String romaStr = AqKanji2Koe.getRomaFromKanji(this, text.toString());
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(romaStr);
+            BluetoothLeService.sendStringToBleDevice(romaStr);
         }
         // Twitterの場合
         else if("com.twitter.android".equals(packageName)) {
@@ -88,12 +88,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
             String message1  = "twitterのメンションです";
             String message1r = AqKanji2Koe.getRomaFromKanji(this, message1);
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(message1r);
+            BluetoothLeService.sendStringToBleDevice(message1r);
 
             // ローマ字に変換して
             String romaStr = AqKanji2Koe.getRomaFromKanji(this, text.toString());
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(romaStr);
+            BluetoothLeService.sendStringToBleDevice(romaStr);
 
         }
         // LINEの場合
@@ -102,12 +102,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
             String message1  = "ラインのメッセージです";
             String message1r = AqKanji2Koe.getRomaFromKanji(this, message1);
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(message1r);
+            BluetoothLeService.sendStringToBleDevice(message1r);
 
             // ローマ字に変換して
             String romaStr = AqKanji2Koe.getRomaFromKanji(this, text.toString());
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(romaStr);
+            BluetoothLeService.sendStringToBleDevice(romaStr);
         }
         // その他
         else {
@@ -115,7 +115,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
             // ローマ字に変換して
             String romaStr = AqKanji2Koe.getRomaFromKanji(this, text.toString());
             // BLEに流し込む
-            DeviceControlActivity.sendStringToBleDevice(romaStr);
+            BluetoothLeService.sendStringToBleDevice(romaStr);
         }
     }
 }

@@ -36,4 +36,15 @@
 
     <string name="service_name">Notification Listener</string>
 
+    <string name="msg_ap_connect_title">自宅WiFiに接続しました</string>
+    <string name="msg_ap_connect_body">帰宅を検知しました。BLEガジェットと接続を行います</string>
+    <string name="msg_ap_disconnect_title">WiFiアクセスポイント切断しました</string>
+    <string name="msg_ap_disconnect_body">自宅から離れたようです。BLEガジェットと切断します</string>
+
+    <string name="gatt_connected_title">Gatt接続</string>
+    <string name="gatt_connected_body">ガジェットBLEのGattに接続しました</string>
+    <string name="gatt_disconnected_title">Gatt切断</string>
+    <string name="gatt_disconnected_body">ガジェットBLEのGattと切断しました</string>
+    <string name="data_available_title">Gattデータ受信</string>
+
 </resources>

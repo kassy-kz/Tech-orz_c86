@@ -68,16 +68,6 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
 
     private static DeviceControlActivity sSelf = null;
 
-    /**
-     * 外部からBLEへのデータ転送を受け付ける
-     * @param str 文字列（発声を望むデータならローマ字に変換しておくこと）
-     */
-    public static void sendStringToBleDevice(String str) {
-        if (sSelf == null) {
-            return;
-        }
-        sSelf.sendLongDataToBLE(str);
-    }
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -308,44 +298,11 @@ public class DeviceControlActivity extends Activity implements View.OnClickListe
                 String romaStr = AqKanji2Koe.getRomaFromKanji(this, kanjiStr);
 
                 // 20バイト超えるであろうデータをBLESerialに分割で流し込む
-                sendLongDataToBLE(romaStr);
+                mBluetoothLeService.sendLongDataToBLE(romaStr);
 
                 break;
             default:
                 break;
         }
     }
-
-
-    /**
-     * 20バイトを超えるデータを分割して送付するためのユーティリティメソッド
-     * BLESerialで一度に送れるのは20byteまでなので
-     * 結合はArduino側で行う
-     * @param sendString
-     */
-    private void sendLongDataToBLE(String sendString) {
-        // 分割文字列
-        String subStr;
-        int i = 0;
-
-        while(true) {
-            if((i+20) < sendString.length()) {
-                subStr = sendString.substring(i, i+20);
-                Log.i(TAG,"subStr = " + subStr);
-
-                mBluetoothLeService.sendData(subStr.getBytes());
-                i=i+20;
-            } else {
-                subStr = sendString.substring(i, sendString.length());
-                //subStr = subStr + "a";
-                Log.i(TAG,"last subStr = " + subStr);
-
-                byte[] sendByte = subStr.getBytes();
-                sendByte[sendByte.length-1] = 0x00;
-                mBluetoothLeService.sendData(subStr.getBytes());
-                break;
-            }
-        }
-    }
-
 }

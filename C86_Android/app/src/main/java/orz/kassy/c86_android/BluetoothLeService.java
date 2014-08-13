@@ -52,14 +52,14 @@ public class BluetoothLeService extends Service {
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
 
-    //BLESerial サービスUUID
-    public static String UUID_BLESERIAL_SERVICE = "569a1101-b87F-490c-92cb-11ba5ea5167c";
-    //　BLESerial　受信UUID （Notify)
-    public static String UUID_BLESERIAL_RX = "569a2000-b87F-490c-92cb-11ba5ea5167c";
+    // BLESerial サービスUUID
+    public static final String UUID_BLESERIAL_SERVICE = "569a1101-b87F-490c-92cb-11ba5ea5167c";
+    // BLESerial　受信UUID （Notify)
+    public static final String UUID_BLESERIAL_RX = "569a2000-b87F-490c-92cb-11ba5ea5167c";
     // BLESerial 送信UUID （write without response)
-    public static String UUID_BLESERIAL_TX = "569a2001-b87F-490c-92cb-11ba5ea5167c";
-    //　キャラクタリスティック設定UUID
-    public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+    public static final String UUID_BLESERIAL_TX = "569a2001-b87F-490c-92cb-11ba5ea5167c";
+    // キャラクタリスティック設定UUID
+    public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 
     public final static String ACTION_GATT_CONNECTED =
             "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
@@ -74,6 +74,32 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
+
+    private static BluetoothLeService sSelf = null;
+
+    /**
+     * 外部からBLEへのデータ転送を受け付ける
+     * @param str 文字列（発声を望むデータならローマ字に変換しておくこと）
+     */
+    public static void sendStringToBleDevice(String str) {
+        if (sSelf == null) {
+            return;
+        }
+        sSelf.sendLongDataToBLE(str);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        sSelf = this;
+        Log.i(TAG, "onCreate");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sSelf = null;
+    }
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -351,4 +377,35 @@ public class BluetoothLeService extends Service {
         mBluetoothGatt.writeCharacteristic(characteristic);
     }
 
+
+    /**
+     * 20バイトを超えるデータを分割して送付するためのユーティリティメソッド
+     * BLESerialで一度に送れるのは20byteまでなので
+     * 結合はArduino側で行う
+     * @param sendString
+     */
+    public void sendLongDataToBLE(String sendString) {
+        // 分割文字列
+        String subStr;
+        int i = 0;
+
+        while(true) {
+            if((i+20) < sendString.length()) {
+                subStr = sendString.substring(i, i+20);
+                Log.i(TAG,"subStr = " + subStr);
+
+                sendData(subStr.getBytes());
+                i=i+20;
+            } else {
+                subStr = sendString.substring(i, sendString.length());
+                //subStr = subStr + "a";
+                Log.i(TAG,"last subStr = " + subStr);
+
+                byte[] sendByte = subStr.getBytes();
+                sendByte[sendByte.length-1] = 0x00;
+                sendData(subStr.getBytes());
+                break;
+            }
+        }
+    }
 }

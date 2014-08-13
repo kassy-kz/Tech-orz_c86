@@ -3,6 +3,7 @@ C86_Android/local.properties
 C86_Android/.idea/workspace.xml
 C86_Android/app/build
 C86_Android/app/lib
+C86_Android/build
 C86_Android/app/libs
 C86_Android/app/src/main/jniLibs
 *.DS_Store
