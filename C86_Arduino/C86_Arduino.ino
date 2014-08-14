@@ -14,6 +14,11 @@ boolean gain;     // Gain setting, 0 = X1, 1 = X16;
 unsigned int ms;  // Integration ("shutter") time in milliseconds
 boolean isDayTime = true; // 昼か夜かのフラグ
 
+// 洗濯タイマー（TWE-LITE）
+boolean isTimerOn = false;
+unsigned long time;
+const int TWE=22;
+
 /**
  * メイン関数１ setup
  **/
@@ -37,6 +42,9 @@ void setup(){
   unsigned char time = 2;
   light.setTiming(gain,time,ms);
   light.setPowerUp();
+
+  // 洗濯タイマー用input(TWE=LITE)
+  pinMode(TWE, INPUT); 
 
 }
 
@@ -98,6 +106,32 @@ void loop(){
 
   } else {
     byte error = light.getError();
+  }
+  
+  
+  // 洗濯タイマー（TWE-LITE）
+  if(digitalRead(TWE)) {
+    // スイッチ話された
+    Serial.println("dip 1");
+  } else {
+    // スイッチ押された
+    Serial.println("dip 0");
+    if(isTimerOn == false) {
+      Serial.println("timer start");
+      time = millis();
+      Serial.println(time);
+      isTimerOn = true;
+    } 
+  }
+
+  if(isTimerOn) {
+    unsigned long cur;
+    cur = millis();
+    if(cur > time + 2000 ) {
+       Serial.println("setaku-complete");
+       atp.Synthe("sentakuga,owa'rimashita.");          
+       isTimerOn = false;
+    }
   }
 
 }
