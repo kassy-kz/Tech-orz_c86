@@ -54,6 +54,15 @@
             android:label="@string/service_name">
         </service>
 
+        <receiver
+            android:name=".AndroidAlarmReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.android.deskclock.ALARM_ALERT" >
+                </action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
