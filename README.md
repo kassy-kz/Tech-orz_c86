@@ -50,13 +50,10 @@ Tech-orz 2014 SUMMER 第一部で紹介したガジェットの設計とソー�
 上記サイトから評価版をダウンロードできます。
 継続使用する場合には製品版を申請する必要があります。（個人利用なら無償、ライセンス発行手数料1800円）
 
-ダウンロードして解凍し、中のlibAqKanji2Koe.soを
-C86_Android/app/src/main/jniLibs/armeabi/
-配下に
-
-aq_dic.zipを
-C86_Android/app/src/main/assets/
-配下に置きます。
+ダウンロードして解凍し、
+* libAqKanji2Koe.soをC86_Android/app/src/main/jniLibs/armeabi/配下に
+* aq_dic.zipを C86_Android/app/src/main/assets/配下に
+それぞれ置きます。
 
 
 
