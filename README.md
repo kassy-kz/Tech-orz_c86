@@ -52,6 +52,10 @@ Tech-orz 2014 SUMMER 第一部で紹介したガジェットの設計とソー�
 
 ダウンロードして解凍し、中のlibAqKanji2Koe.soを
 C86_Android/app/src/main/jniLibs/armeabi/
+配下に
+
+aq_dic.zipを
+C86_Android/app/src/main/assets/
 配下に置きます。
 
 
