@@ -57,4 +57,13 @@ Tech-orz 2014 SUMMER 第一部で紹介したガジェットの設計とソー�
 それぞれ置きます。
 
 
+### TSL2561 （照度センサー）ライブラリ
+
+[https://github.com/sparkfun/TSL2561_Luminosity_Sensor_BOB](https://github.com/sparkfun/TSL2561_Luminosity_Sensor_BOB)
+
+上記サイトからダウンロードして解凍し、Libraries/SFE_TSL2561 を
+(Arduinoのインストールディレクトリ)/library/ 
+配下に置きます。
+
+
 

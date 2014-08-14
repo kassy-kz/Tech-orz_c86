@@ -1,5 +1,6 @@
 #include <AquesTalk.h>
 #include <Wire.h> 
+#include <SFE_TSL2561.h>
 
 AquesTalk atp; 
 
@@ -7,6 +8,15 @@ AquesTalk atp;
 int rcvData = 0;
 int sendCount = 0;
 
+// 照度センサー用のパラメータ
+SFE_TSL2561 light;
+boolean gain;     // Gain setting, 0 = X1, 1 = X16;
+unsigned int ms;  // Integration ("shutter") time in milliseconds
+boolean isDayTime = true; // 昼か夜かのフラグ
+
+/**
+ * メイン関数１ setup
+ **/
 void setup(){
   // デバッグシリアル
   Serial.begin(9600);
@@ -16,8 +26,24 @@ void setup(){
   pinMode(16, OUTPUT);
   // シリアル通信セットアップ
   Serial2.begin(9600);
+  
+  // 照度センサー（TSL2561）
+  light.begin();
+  unsigned char ID;
+  if (light.getID(ID)) {
+  } else {
+    byte error = light.getError();
+  }
+  unsigned char time = 2;
+  light.setTiming(gain,time,ms);
+  light.setPowerUp();
+
 }
 
+
+/**
+ * メイン関数2 loop
+ **/
 void loop(){
   
   // BLESerial受信処理（分割結合あり）
@@ -44,6 +70,36 @@ void loop(){
     sendCount++;
     Serial2.write("success receive "+ sendCount);
   }
+  
+  
+    // 照度センサー（TSL2561）
+  unsigned int data0, data1;
+  if (light.getData(data0,data1)) {
+    double lux;    // Resulting lux value
+    boolean good;  // True if neither sensor is saturated
+    good = light.getLux(gain,ms,data0,data1,lux);
+
+    // 昼夜を設定する
+    // 昼の場合
+    if(isDayTime) {
+      // 夜になった
+      if(lux < 30) {
+        isDayTime = false;
+        atp.Synthe("oyasuminasai.");  
+      }
+    // 夜の場合
+    } else {
+      // 昼になった
+      if(lux > 30) {
+        isDayTime = true;
+        atp.Synthe("ohayo-gozaima_su.");
+      }      
+    }
+
+  } else {
+    byte error = light.getError();
+  }
+
 }
 
 
