@@ -19,6 +19,10 @@ boolean isTimerOn = false;
 unsigned long time;
 const int TWE=22;
 
+// 赤外線リモコン検知
+const int IR_OUT1=9;
+const int IR_OUT2=8;
+
 /**
  * メイン関数１ setup
  **/
@@ -77,6 +81,10 @@ void loop(){
     // BLESerialで返答を送信する
     sendCount++;
     Serial2.write("success receive "+ sendCount);
+    
+    // 赤外線リモコン検知
+    pinMode(IR_OUT1, INPUT); 
+    pinMode(IR_OUT2, INPUT); 
   }
   
   
@@ -133,6 +141,18 @@ void loop(){
        isTimerOn = false;
     }
   }
+  
+  // 赤外線リモコン検知
+  int val_ir1 = 0;
+  int val_ir2 = 0;
+  // 赤外線
+  val_ir1 = digitalRead(IR_OUT1);  // 入力ピンを読む
+  val_ir2 = digitalRead(IR_OUT2);  // 入力ピンを読む
+  delay(300);
+  Serial.print("IR1:");
+  Serial.println(val_ir1);
+  Serial.print("IR2:");
+  Serial.println(val_ir2);
 
 }
 
