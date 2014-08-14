@@ -112,10 +112,10 @@ void loop(){
   // 洗濯タイマー（TWE-LITE）
   if(digitalRead(TWE)) {
     // スイッチ話された
-    Serial.println("dip 1");
+//    Serial.println("dip 1");
   } else {
     // スイッチ押された
-    Serial.println("dip 0");
+//    Serial.println("dip 0");
     if(isTimerOn == false) {
       Serial.println("timer start");
       time = millis();
