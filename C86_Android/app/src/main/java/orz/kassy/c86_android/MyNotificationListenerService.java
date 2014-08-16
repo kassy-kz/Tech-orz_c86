@@ -1,5 +1,6 @@
 package orz.kassy.c86_android;
 
+import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -18,10 +19,26 @@ public class MyNotificationListenerService extends NotificationListenerService {
         kanji2koe = new AqKanji2Koe();
         super.onCreate();
     }
- 
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent,flags,startId);
+        Log.i(TAG,"mynotificationlistener start");
+        MyUtils.showSubSubNotification(this,
+                R.drawable.ic_launcher,
+                "通知リスナー稼働中",
+                "");
+        return START_STICKY;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i(TAG,"mynotificationlistener stop");
+        MyUtils.showSubSubNotification(this,
+                R.drawable.ic_launcher,
+                "通知リスナーが終了しています",
+                "");
     }
 
     /**

@@ -72,6 +72,7 @@ public class BleScanService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent,flags,startId);
         Log.i(TAG,"onStartCommand");
         // Bluetooth機能が有効になっているかのチェック。無効の場合はダイアログを表示して有効をうながす。(intentにて)
         if (!mBluetoothAdapter.isEnabled()) {
@@ -190,8 +191,8 @@ public class BleScanService extends Service {
             // データ受信時
             else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                MyUtils.showNotification(context, R.drawable.ic_launcher,
-                        getResources().getString(R.string.gatt_disconnected_title),
+                MyUtils.showSubNotification(context, R.drawable.ic_launcher,
+                        getResources().getString(R.string.data_available_title),
                         data);
             }
         }

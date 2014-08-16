@@ -80,6 +80,11 @@ public class WifiEventReceiver extends BroadcastReceiver {
         // BLE接続サービス立ち上げ（Activityを使用しない）
         Intent bleScan = new Intent(context, BleScanService.class);
         context.startService(bleScan);
+
+        // NotificationListenerServiceを立ち上げる
+        Intent serviceIntent = new Intent(context, MyNotificationListenerService.class);
+        context.startService(serviceIntent);
+
     }
 
 
@@ -88,7 +93,7 @@ public class WifiEventReceiver extends BroadcastReceiver {
      * @param context
      */
     private void stopBleService(Context context) {
-        // 帰宅を検知した旨をNotificationで通知してみる
+        // 家を出たのを検知した旨をNotificationで通知してみる
         MyUtils.showNotification(context,
                 R.drawable.ic_launcher,
                 context.getResources().getString(R.string.msg_ap_disconnect_title),
@@ -97,6 +102,11 @@ public class WifiEventReceiver extends BroadcastReceiver {
         // BLE接続サービス立ち上げ（Activityを使用しない）
         Intent bleScan = new Intent(context, BleScanService.class);
         context.stopService(bleScan);
+
+        // NotificationListenerService止める
+        Intent serviceIntent = new Intent(context, MyNotificationListenerService.class);
+        context.stopService(serviceIntent);
+
     }
 
     /**
