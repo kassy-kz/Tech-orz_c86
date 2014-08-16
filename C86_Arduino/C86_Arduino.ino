@@ -125,7 +125,7 @@ void setup(){
 
   easyvr.setPinOutput(EasyVR::IO1, LOW);
   Serial.println("EasyVR detected!");
-  easyvr.setTimeout(5);
+  easyvr.setTimeout(1);
   easyvr.setLanguage(0);
 
   group = EasyVR::TRIGGER; //<-- start group (customize)
